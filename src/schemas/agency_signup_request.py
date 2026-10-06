@@ -11,7 +11,7 @@ class AgencySignupRequest(BaseModel):
     address: str
     country: str
     city: str
-    cac_number: str
+    cac_number: str | None = None
     password: str
     confirm_password: str
 
