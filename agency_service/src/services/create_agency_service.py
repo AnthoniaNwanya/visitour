@@ -30,16 +30,13 @@ async def create_new_agency(request):
     if request.password != request.confirm_password:
         raise VerifyMismatchError("Password and Confirm Password do not match")
 
-    if not request.cac_number or not request.cac_number.strip():
-        raise ValueRequiredError("CAC Number is required")
-    
-    existing_cac = agency_repository.get_cac(request.cac_number)
+    if request.cac_number and request.cac_number.strip():
+        existing_cac = agency_repository.get_cac(request.cac_number)
 
-# make cac optional and only save cac field if it is an active/approved cac
-    if existing_cac:
-        raise AgencyAlreadyExistsError(
-            "An agency with this CAC number already exists."
-    )
+        if existing_cac:
+            raise AgencyAlreadyExistsError(
+                "An agency with this CAC number already exists."
+        )
 
     if not request.first_name or not request.last_name:
         raise ValueRequiredError("First and Last Names are required")

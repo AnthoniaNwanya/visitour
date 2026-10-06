@@ -11,8 +11,6 @@ from schemas.dtos.update_agency_response import UpdateAgencyResponse
 from argon2 import PasswordHasher
 
 async def update_agency(request: UpdateAgencyRequest, agency_id: int):
-# authorize agency by logging in before this request
-
     existing_id = agency_repository.get_agency_id(agency_id)
     if not existing_id:
         raise AgencyNotFoundError("Agency not found")
