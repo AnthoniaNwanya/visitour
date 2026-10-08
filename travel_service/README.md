@@ -9,30 +9,30 @@ A clean and simple Python + PostgreSQL API for travel agencies and travelers to 
 ```text
 visitour/
 +-- app/
-¦   +-- config/
-¦   ¦   +-- database.py       # Connects to PostgreSQL using SQLAlchemy
-¦   +-- models/               # Database tables (defines how data is stored in PostgreSQL)
-¦   ¦   +-- user.py           # Users table (travelers and agencies)
-¦   ¦   +-- tour.py           # Tours table (destination, price, capacity)
-¦   ¦   +-- visa.py           # Visa applications table (country, status)
-¦   ¦   +-- booking.py        # Bookings table (traveler_id, tour_id, total_price)
-¦   +-- schemas/              # Pydantic models (validates incoming & outgoing JSON data)
-¦   ¦   +-- user.py
-¦   ¦   +-- tour.py
-¦   ¦   +-- visa.py
-¦   ¦   +-- booking.py
-¦   +-- repositories/         # Database queries (CRUD operations: Create, Read, Update, Delete)
-¦   ¦   +-- base.py
-¦   ¦   +-- user.py
-¦   ¦   +-- tour.py
-¦   ¦   +-- visa.py
-¦   ¦   +-- booking.py
-¦   +-- routes/               # API Endpoints (URL paths that clients call)
-¦   ¦   +-- user.py           # /users
-¦   ¦   +-- tour.py           # /tours
-¦   ¦   +-- visa.py           # /visas
-¦   ¦   +-- booking.py        # /bookings
-¦   +-- main.py               # Starts FastAPI, creates tables, and registers routes
+ï¿½   +-- config/
+ï¿½   ï¿½   +-- database.py       # Connects to PostgreSQL using SQLAlchemy
+ï¿½   +-- models/               # Database tables (defines how data is stored in PostgreSQL)
+ï¿½   ï¿½   +-- user.py           # Users table (travelers and agencies)
+ï¿½   ï¿½   +-- tour.py           # Tours table (tour, price, capacity)
+ï¿½   ï¿½   +-- visa.py           # Visa applications table (country, status)
+ï¿½   ï¿½   +-- booking.py        # Bookings table (traveler_id, tour_id, total_price)
+ï¿½   +-- schemas/              # Pydantic models (validates incoming & outgoing JSON data)
+ï¿½   ï¿½   +-- user.py
+ï¿½   ï¿½   +-- tour.py
+ï¿½   ï¿½   +-- visa.py
+ï¿½   ï¿½   +-- booking.py
+ï¿½   +-- repositories/         # Database queries (CRUD operations: Create, Read, Update, Delete)
+ï¿½   ï¿½   +-- base.py
+ï¿½   ï¿½   +-- user.py
+ï¿½   ï¿½   +-- tour.py
+ï¿½   ï¿½   +-- visa.py
+ï¿½   ï¿½   +-- booking.py
+ï¿½   +-- routes/               # API Endpoints (URL paths that clients call)
+ï¿½   ï¿½   +-- user.py           # /users
+ï¿½   ï¿½   +-- tour.py           # /tours
+ï¿½   ï¿½   +-- visa.py           # /visas
+ï¿½   ï¿½   +-- booking.py        # /bookings
+ï¿½   +-- main.py               # Starts FastAPI, creates tables, and registers routes
 +-- .env                      # Database credentials and settings
 +-- .env.example              # Blueprint for environment variables
 +-- requirements.txt          # Python dependencies

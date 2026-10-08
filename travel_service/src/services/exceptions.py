@@ -6,9 +6,9 @@ class UnauthorizedError(Exception):
     pass
 
 
-class TravelAlreadyExistsError(Exception):
+class TourAlreadyExistsError(Exception):
     pass
 
 
-class TravelNotFoundError(Exception):
+class TourNotFoundError(Exception):
     pass

@@ -2,14 +2,8 @@ import os
 
 import psycopg2
 from dotenv import load_dotenv
-import json
 
 load_dotenv()
-
-with open('config.json') as config_file:
-    config = json.load(config_file)
-
-db_config = config['postgres']
 
 def get_db_connection():
     try:
