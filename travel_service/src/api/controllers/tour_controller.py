@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Depends
 from api.dependencies.authorization import get_current_agency
-from schemas.get_query_request import GetQueryRequest
+from schemas.get_tour_query_request import GetQueryRequest
 from schemas.create_tour_request import CreateTourRequest
 from schemas.update_tour_request import UpdateTourRequest
 from services.tours import create_tour_service, get_tour_service, update_tour_service, delete_tour_service
@@ -33,16 +33,6 @@ async def get_tours(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-
-def get_tour(tour_id: int):
-    try:
-        return tour_service.get_single_tour(tour_id)
-    except TourNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
 
 async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int = Depends(get_current_agency)):
     try:

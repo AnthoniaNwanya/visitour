@@ -1,4 +1,4 @@
-from repository import travel_repository
+from repository import tour_repository
 from models.enums.tour_status import TourStatus
 from schemas.dtos.create_tour_response import CreateTourResponse
 from schemas.create_tour_request import CreateTourRequest
@@ -8,7 +8,7 @@ from services.exceptions import (
     ValueRequiredError)
 
 async def create_new_tour(request: CreateTourRequest, agency_id: int):
-    existing_title = travel_repository.get_tour_by_title(
+    existing_title = tour_repository.get_tour_by_title(
     request.title,
     agency_id
     )
@@ -19,7 +19,7 @@ async def create_new_tour(request: CreateTourRequest, agency_id: int):
     )
 
     status = TourStatus.AVAILABLE
-    tour = travel_repository.create(request, agency_id, status)
+    tour = tour_repository.create(request, agency_id, status)
 
     return CreateTourResponse(
         id=tour["id"],

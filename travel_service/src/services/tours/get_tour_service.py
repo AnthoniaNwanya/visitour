@@ -1,13 +1,13 @@
 from fastapi import HTTPException
-from schemas.get_query_request import GetQueryRequest
+from schemas.get_tour_query_request import GetQueryRequest
 from services.exceptions import ( 
     TourNotFoundError)
-from repository import travel_repository
-from schemas.dtos.get_query_response import GetQueryResponse
+from repository import tour_repository
+from schemas.dtos.get_tour_query_response import GetQueryResponse
 
 
 async def get_all_tours(params: GetQueryRequest):
-    tours = travel_repository.get_tours(params)
+    tours = tour_repository.get_tours(params)
 
     if not tours:
         raise TourNotFoundError("Tour with specified parameter not found")

@@ -1,7 +1,9 @@
 from fastapi import APIRouter
-
 from api.controllers import tour_controller
+from api.controllers import visa_application_controller
 from schemas.dtos.delete_tour_response import DeleteTourResponse
+from schemas.dtos.delete_visa_response import DeleteVisaResponse
+from api.controllers import visa_type_controller
 
 travelrouter = APIRouter(
     prefix="/travel",
@@ -9,19 +11,15 @@ travelrouter = APIRouter(
 )
 
 travelrouter.post("/tour")(tour_controller.create_tour)
-# travelrouter.post("/visa")(visa_controller.create_visa)
+travelrouter.post("/visa")(visa_application_controller.create_visa_application)
 
 travelrouter.get("/tour")(tour_controller.get_tours)
-# travelrouter.get("/tour/{travel_id}")(tour_controller.get_tour)
-# # travelrouter.get("/visa")(visa_controller.get_visas)
-# # travelrouter.get("/visa/{travel_id}")(visa_controller.get_visa)
+travelrouter.get("/visa")(visa_application_controller.get_visa_applications)
+travelrouter.get("/visa-types")(visa_type_controller.get_visa_types)
 
 travelrouter.put("/tour/{tour_id}")(tour_controller.update_tour)
-# # travelrouter.put("/visa/{travel_id}")(visa_controller.update_visa)
+travelrouter.put("/visa/{visa_id}")(visa_application_controller.update_visa_application)
 
-# travelrouter.delete("/tour/{travel_id}")(tour_controller.delete_tour)
-travelrouter.delete(
-    "/tour/{tour_id}",
-    response_model=DeleteTourResponse
-)(tour_controller.delete_tour)
-# travelrouter.delete("/visa/{travel_id}")(visa_controller.delete_visa)
+travelrouter.delete("/tour/{tour_id}", response_model=DeleteTourResponse)(tour_controller.delete_tour)
+travelrouter.delete("/visa/{visa_id}", response_model=DeleteVisaResponse)(visa_application_controller.delete_visa_application)
+

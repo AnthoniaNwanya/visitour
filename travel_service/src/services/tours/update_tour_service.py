@@ -3,17 +3,17 @@ from schemas.update_tour_request import UpdateTourRequest
 from services.exceptions import ( 
     TourNotFoundError, 
     TourAlreadyExistsError)
-from repository import travel_repository
+from repository import tour_repository
 from schemas.dtos.update_tour_response import UpdateTourResponse
 from api.dependencies.authorization import get_current_agency
 
 
 async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int = Depends(get_current_agency)):
-    existing_id = travel_repository.get_tour_id(tour_id)
+    existing_id = tour_repository.get_tour_id(tour_id)
     if not existing_id:
         raise TourNotFoundError("Tour not found")
 
-    existing_title = travel_repository.get_tour_by_title(
+    existing_title = tour_repository.get_tour_by_title(
         request.title,
         agency_id
     )
@@ -23,7 +23,7 @@ async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int =
             "You already have a tour with this name."
         )
 
-    tour = travel_repository.update_tour(
+    tour = tour_repository.update_tour(
         request,
         tour_id
     )
