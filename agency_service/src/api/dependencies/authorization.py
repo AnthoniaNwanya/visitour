@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
+from jose import JWTError
 from services.authentication import verify_access_token
 
 
@@ -15,7 +15,7 @@ async def get_current_agency(
     try:
         payload = verify_access_token(token)
 
-    except Exception:
+    except JWTError:
         raise HTTPException(
             status_code=401,
             detail="Invalid or expired token"

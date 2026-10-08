@@ -95,7 +95,8 @@ def login_agency(request):
         )
 
     access_token = create_access_token(
-        agency["id"]
+        agency["id"],
+        "agency"
     )
     
     return AgencyLoginResponse(

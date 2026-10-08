@@ -1,5 +1,4 @@
 from fastapi import HTTPException
-from api.dependencies.authorization import get_current_agency
 from schemas.update_agency_request import UpdateAgencyRequest
 from services.exceptions import ( 
     AgencyNotFoundError, 
