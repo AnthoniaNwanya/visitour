@@ -4,8 +4,7 @@ from jose import jwt
 from pathlib import Path
 from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-
+BASE_DIR = Path(__file__).resolve().parents[3]
 load_dotenv(BASE_DIR / ".env")
 
 AUTH_SECRET_KEY =  os.getenv("AUTH_SECRET_KEY")

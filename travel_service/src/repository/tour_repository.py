@@ -57,9 +57,8 @@ def create(request, agency_id: int, status: TourStatus,):
 
     return tour
 
-def get_tours(params):
+def get_tours(params, agency_id=None, status=None):
     connection = get_db_connection()
-
     cursor = connection.cursor(cursor_factory=DictCursor)
 
     query = """
@@ -72,27 +71,35 @@ def get_tours(params):
             end_date,
             country,
             price,
-            available_slots,                                                                        
+            available_slots,
             status,
             created_at,
             updated_at
         FROM tours
         WHERE 1 = 1
-        
     """
+
     values = []
+
+    if agency_id is not None:
+        query += " AND agency_id = %s"
+        values.append(agency_id)
+
+    if status is not None:
+        query += " AND status = %s"
+        values.append(status)
 
     if params.id is not None:
         query += " AND id = %s"
         values.append(params.id)
 
     if params.title:
-        query += " AND %s = ANY(title) "
-        values.append(params.title)
+        query += " AND title ILIKE %s"
+        values.append(f"%{params.title}%")
 
     if params.country:
-        query += " AND %s = ANY(country)"
-        values.append(params.country)
+        query += " AND country ILIKE %s"
+        values.append(f"%{params.country}%")
 
     if params.start_date:
         query += " AND start_date = %s"
@@ -120,7 +127,7 @@ def get_tours(params):
 
     query += " ORDER BY created_at DESC"
 
-    cursor.execute(query, values)
+    cursor.execute(query, tuple(values))
 
     tours = cursor.fetchall()
 

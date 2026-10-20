@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.controllers import traveler
+from api.controllers import traveler_controller
 
 
 travelerrouter = APIRouter(
@@ -8,8 +8,13 @@ travelerrouter = APIRouter(
     tags=["Travelers"],
 )
 
-travelerrouter.get("/")(traveler.get_travelers)
-travelerrouter.get("/{traveler_id}")(traveler.get_traveler)
-travelerrouter.post("/")(traveler.create_traveler)
-travelerrouter.put("/{traveler_id}")(traveler.update_traveler)
-travelerrouter.delete("/{traveler_id}")(traveler.delete_traveler)
+travelerrouter.post("/signup")(traveler_controller.register_traveler)
+travelerrouter.post("/login")(traveler_controller.login_traveler)
+
+travelerrouter.get("/")(traveler_controller.get_travelers)
+
+
+travelerrouter.put("/")(traveler_controller.update_traveler)
+
+travelerrouter.delete("/")(traveler_controller.delete_traveler)
+

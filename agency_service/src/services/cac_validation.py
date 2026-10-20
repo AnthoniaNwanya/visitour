@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from schemas.validate_cac_request import ValidateCACRequest
 from services.verify_agency import approve_agency, reject_agency
 from repository import agency_repository
-from services.exceptions import AgencyAlreadyExistsError, AgencyNotFoundError
+from services.exception.exceptions import AgencyAlreadyExistsError, AgencyNotFoundError
 
 
 KORAPAY_CAC_URL = (

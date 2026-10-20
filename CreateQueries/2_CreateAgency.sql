@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS agencies (
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     phone_number VARCHAR(20),
-    address VARCHAR(255) NOT NULL ,
+    address VARCHAR(255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     country VARCHAR(100) NOT NULL,
     status VARCHAR(20) DEFAULT 'PENDING_VERIFICATION',

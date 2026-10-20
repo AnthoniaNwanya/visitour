@@ -6,3 +6,4 @@ class VisaQueryRequest(BaseModel):
     visa_name: str | None = None
     country: str | None = None
     visa_type_id: int | None = None
+    status: str | None = None

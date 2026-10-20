@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Depends
 from schemas.update_tour_request import UpdateTourRequest
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     TourNotFoundError, 
     TourAlreadyExistsError)
 from repository import tour_repository

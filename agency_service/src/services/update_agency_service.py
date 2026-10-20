@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from schemas.update_agency_request import UpdateAgencyRequest
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     AgencyNotFoundError, 
     AgencyAlreadyExistsError,
     ValueRequiredError,
@@ -9,15 +9,15 @@ from repository import agency_repository
 from schemas.dtos.update_agency_response import UpdateAgencyResponse
 from argon2 import PasswordHasher
 
-async def update_agency(request: UpdateAgencyRequest, agency_id: int):
-    existing_id = agency_repository.get_agency_id(agency_id)
+async def update_agency(request: UpdateAgencyRequest, current_agency_id: int):
+    existing_id = agency_repository.get_agency_id(current_agency_id)
     if not existing_id:
         raise AgencyNotFoundError("Agency not found")
 
     if request.agency_name:
         existing_name = agency_repository.get_agency_name(request.agency_name)
 
-        if existing_name and existing_name["id"] != agency_id:
+        if existing_name and existing_name["id"] != current_agency_id:
             raise AgencyAlreadyExistsError("An agency with this name already exists")
     
     if request.password and not request.confirm_password:
@@ -36,7 +36,7 @@ async def update_agency(request: UpdateAgencyRequest, agency_id: int):
         password_hash = password_hasher.hash(request.password)
 
     agency = agency_repository.update_agency(
-        agency_id, 
+        current_agency_id, 
         request,
         password_hash
     )

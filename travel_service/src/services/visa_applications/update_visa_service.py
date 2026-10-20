@@ -1,6 +1,6 @@
 from fastapi import HTTPException, Depends
 from schemas.update_visa_request import UpdateVisaRequest
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     VisaNotFoundError, 
     VisaAlreadyExistsError)
 from repository import visa_repository

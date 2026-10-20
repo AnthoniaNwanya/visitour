@@ -1,4 +1,4 @@
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     TourNotFoundError,)
 from repository import tour_repository
 from fastapi import HTTPException, Depends

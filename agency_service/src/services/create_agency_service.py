@@ -3,14 +3,14 @@ from schemas.dtos.agency_signup_response import AgencySignupResponse
 from schemas.dtos.agency_login_response import AgencyLoginResponse
 from models.enums.agency_status import AgencyStatus
 from repository import agency_repository
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     AgencyNotFoundError, 
     ValueRequiredError, 
     AgencyAlreadyExistsError, 
     VerifyMismatchError,
     ForbiddenError)
 from argon2 import PasswordHasher
-from services.authentication import create_access_token
+from services.authentications.authentication import create_access_token
 
 async def create_new_agency(request):
     if not request.agency_name or not request.email:
@@ -95,8 +95,8 @@ def login_agency(request):
         )
 
     access_token = create_access_token(
-        agency["id"],
-        "agency"
+        user_id=agency["id"],
+        role="agency"
     )
     
     return AgencyLoginResponse(

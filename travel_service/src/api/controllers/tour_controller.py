@@ -1,14 +1,16 @@
 from fastapi import HTTPException, Depends
-from api.dependencies.authorization import get_current_agency
+from api.dependencies.authorization import get_current_agency, get_current_user
 from schemas.get_tour_query_request import GetQueryRequest
 from schemas.create_tour_request import CreateTourRequest
 from schemas.update_tour_request import UpdateTourRequest
 from services.tours import create_tour_service, get_tour_service, update_tour_service, delete_tour_service
-from services.exceptions import (
+from services.exception.exceptions import (
     TourAlreadyExistsError,
     TourNotFoundError,
     ValueRequiredError,
     UnauthorizedError,
+    UnauthorizedError,
+    ForbiddenError
 )
 
 
@@ -24,13 +26,24 @@ async def create_tour(request: CreateTourRequest, agency_id: int = Depends(get_c
 
 
 async def get_tours(
-        params: GetQueryRequest = Depends()):
-        # ,
-        # current_user: dict = Depends(get_current_user)):
+    params: GetQueryRequest = Depends(),
+    current_user: dict = Depends(get_current_user)):
     try:
-        return await get_tour_service.get_all_tours(params) #, current_user["role"])
-    except TourNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
+        role = current_user["role"]
+        user_id = current_user["id"]
+
+        if role == "traveler":
+            return await get_tour_service.get_available_tours(
+                params
+        )
+
+        if role == "agency":
+            return await get_tour_service.get_agency_tours(
+                params,
+                agency_id=user_id
+            )        
+    except ForbiddenError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

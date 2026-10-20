@@ -1,4 +1,4 @@
-CREATE TABLE bookings (
+CREATE TABLE IF NOT EXISTS bookings (
     id SERIAL PRIMARY KEY,
     traveler_id INTEGER REFERENCES travelers(id),  
     booking_reference VARCHAR(255) UNIQUE NOT NULL,

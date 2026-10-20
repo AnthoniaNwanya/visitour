@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError
-from services.authentication import verify_access_token
+from services.authentications.authentication import verify_access_token
 
 
 security = HTTPBearer()
@@ -24,7 +24,7 @@ async def get_current_agency(
     if payload.get("role") != "agency":
         raise HTTPException(
             status_code=403,
-            detail="Invalid account type"
+            detail="You are not authorized to access this resource."
         )
 
     agency_id = payload.get("sub")

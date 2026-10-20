@@ -209,7 +209,7 @@ def get_agency_name(agency_name):
 
     return agency
 
-def update_agency(agency_id: int, request, password_hash=None):
+def update_agency(current_agency_id: int, request, password_hash=None):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=DictCursor)
 
@@ -240,7 +240,7 @@ def update_agency(agency_id: int, request, password_hash=None):
             FROM agencies
             WHERE id = %s
             """,
-            (agency_id,)
+            (current_agency_id,)
         )
 
         agency = cursor.fetchone()
@@ -277,7 +277,7 @@ def update_agency(agency_id: int, request, password_hash=None):
 
     fields.append("updated_at = CURRENT_TIMESTAMP")
 
-    values.append(agency_id)
+    values.append(current_agency_id)
 
     query = f"""
         UPDATE agencies
@@ -311,7 +311,7 @@ def update_agency(agency_id: int, request, password_hash=None):
 
     return agency
 
-def delete_agency(agency_id: int):
+def delete_agency(current_agency_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=DictCursor)
 
@@ -342,7 +342,7 @@ def delete_agency(agency_id: int):
         query,
         (
             AgencyStatus.DELETED.value,
-            agency_id
+            current_agency_id
         )
     )
 

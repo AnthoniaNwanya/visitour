@@ -55,7 +55,7 @@ def create(request, agency_id: int, status: VisaStatus,):
 
     return visa_application
 
-def get_visas(params):
+def get_visas(params, agency_id=None, status=None):
     connection = get_db_connection()
 
     cursor = connection.cursor(cursor_factory=DictCursor)
@@ -79,6 +79,14 @@ def get_visas(params):
     """
     values = []
 
+    if agency_id is not None:
+        query += " AND agency_id = %s"
+        values.append(agency_id)
+
+    if status is not None:
+        query += " AND status = %s"
+        values.append(status)
+
     if params.id is not None:
         query += " AND id = %s"
         values.append(params.id)
@@ -91,9 +99,13 @@ def get_visas(params):
         query += " AND %s = ANY(country)"
         values.append(params.country)
 
-    if params.visa_type_id:
+    if params.visa_type_id is not None:
         query += " AND visa_type_id = %s"
         values.append(params.visa_type_id)
+
+    if params.status:
+        query += " AND status = %s"
+        values.append(params.status)
 
     query += " ORDER BY created_at DESC"
 

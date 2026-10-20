@@ -8,6 +8,7 @@ class TourNotFoundError(Exception):
     pass
 class VisaAlreadyExistsError(Exception):
     pass
-
+class ForbiddenError(Exception):
+    pass
 class VisaNotFoundError(Exception):
     pass

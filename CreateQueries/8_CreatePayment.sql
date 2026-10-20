@@ -1,4 +1,4 @@
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,
     booking_id INTEGER REFERENCES bookings(id),
     payment_reference VARCHAR(255) UNIQUE NOT NULL,

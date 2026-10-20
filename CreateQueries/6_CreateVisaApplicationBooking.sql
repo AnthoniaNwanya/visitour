@@ -1,4 +1,4 @@
-CREATE TABLE visa_bookings (
+CREATE TABLE IF NOT EXISTS visa_bookings (
     id SERIAL PRIMARY KEY,
     visa_id INTEGER REFERENCES visa_applications(id),
     booking_id INTEGER REFERENCES bookings(id)

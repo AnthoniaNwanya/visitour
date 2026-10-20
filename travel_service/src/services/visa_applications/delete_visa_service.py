@@ -1,4 +1,4 @@
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     VisaNotFoundError,)
 from repository import visa_repository
 from fastapi import HTTPException, Depends
