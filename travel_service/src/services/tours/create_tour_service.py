@@ -2,7 +2,7 @@ from repository import tour_repository
 from models.enums.tour_status import TourStatus
 from schemas.dtos.create_tour_response import CreateTourResponse
 from schemas.create_tour_request import CreateTourRequest
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     TourNotFoundError, 
     TourAlreadyExistsError,
     ValueRequiredError)

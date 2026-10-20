@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from schemas.get_query_request import GetQueryRequest
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     AgencyNotFoundError)
 from repository import agency_repository
 from schemas.dtos.get_query_response import GetQueryResponse

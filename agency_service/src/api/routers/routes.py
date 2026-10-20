@@ -17,10 +17,9 @@ agencyrouter.post("/validate-cac/{agency_id}")(agency_controller.validate_cac)
 agencyrouter.get("/")(agency_controller.get_agencies)
 agencyrouter.get("/{agency_id}")(agency_controller.get_agency)
 
-agencyrouter.put("/{agency_id}")(agency_controller.update_agency)
+agencyrouter.put("/")(agency_controller.update_agency)
 
 agencyrouter.delete(
-    "/{agency_id}",
+    "/",
     response_model=DeleteAgencyResponse
-    # status_code=204
 )(agency_controller.delete_agency)

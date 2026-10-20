@@ -1,5 +1,5 @@
 from fastapi import HTTPException, Depends
-from services.exceptions import (AgencyAlreadyExistsError, 
+from services.exception.exceptions import (AgencyAlreadyExistsError, 
     BadRequest,
     AgencyNotFoundError, 
     ValueRequiredError, 
@@ -118,9 +118,9 @@ def get_agency(agency_id: int):
         )
 
 
-async def update_agency(request: UpdateAgencyRequest, agency_id: int = Depends(get_current_agency)):
+async def update_agency(request: UpdateAgencyRequest, current_agency_id: int = Depends(get_current_agency)):
     try:
-        return await update_agency_service.update_agency(request, agency_id)
+        return await update_agency_service.update_agency(request, current_agency_id)
     
     except AgencyNotFoundError as e:
         raise HTTPException(
@@ -153,9 +153,9 @@ async def update_agency(request: UpdateAgencyRequest, agency_id: int = Depends(g
         )
 
 
-async def delete_agency(agency_id: int = Depends(get_current_agency)):
+async def delete_agency(current_agency_id: int = Depends(get_current_agency)):
     try:
-        return await delete_agency_service.delete_agency(agency_id)
+        return await delete_agency_service.delete_agency(current_agency_id)
     
     except AgencyNotFoundError as e:
         raise HTTPException(

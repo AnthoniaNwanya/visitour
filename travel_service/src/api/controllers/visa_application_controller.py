@@ -1,14 +1,15 @@
 from fastapi import HTTPException, Depends
-from api.dependencies.authorization import get_current_agency
+from api.dependencies.authorization import get_current_agency, get_current_user
 from schemas.get_visa_query_request import VisaQueryRequest
 from schemas.create_visa_request import CreateVisaRequest
 from schemas.update_visa_request import UpdateVisaRequest
 from services.visa_applications import create_visa_service, get_visa_service, update_visa_service, delete_visa_service
-from services.exceptions import (
+from services.exception.exceptions import (
     VisaAlreadyExistsError,
     VisaNotFoundError,
     ValueRequiredError,
     UnauthorizedError,
+    ForbiddenError
 )
 
 
@@ -24,13 +25,25 @@ async def create_visa_application(request: CreateVisaRequest, agency_id: int = D
 
 
 async def get_visa_applications(
-        params: VisaQueryRequest = Depends()):
-        # ,
-        # current_user: dict = Depends(get_current_user)):
+    params: VisaQueryRequest = Depends(),
+    current_user: dict = Depends(get_current_user)):
     try:
-        return await get_visa_service.get_all_visas(params) #, current_user["role"])
-    except VisaNotFoundError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
+        role = current_user["role"]
+        user_id = current_user["id"]
+
+        if role == "traveler":
+            return await get_visa_service.get_available_visas(
+                params
+        )
+
+        if role == "agency":
+            return await get_visa_service.get_agency_visas(
+                params,
+                agency_id=user_id
+            )
+    
+    except ForbiddenError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

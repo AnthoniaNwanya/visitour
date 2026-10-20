@@ -1,5 +1,39 @@
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import JWTError
 
+from services.authentications.authentication import verify_access_token
 
-async def get_current_traveler():
-    return {"message": "Authorization dependency placeholder"}
+security = HTTPBearer()
+
+async def get_current_traveler(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+
+    try:
+        payload = verify_access_token(token)
+    except JWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token"
+        )
+
+    if payload.get("role") != "traveler":
+        raise HTTPException(
+            status_code=403,
+            detail="You are not authorized to access this resource."
+        )
+
+    traveler_id = payload.get("sub")
+
+    try:
+        traveler_id = int(traveler_id)
+        if traveler_id <= 0:
+            raise ValueError
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token"
+        )
+
+    return traveler_id
+

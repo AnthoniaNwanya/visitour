@@ -2,7 +2,7 @@ from repository import visa_repository
 from models.enums.visa_status import VisaStatus
 from schemas.dtos.create_visa_response import CreateVisaResponse
 from schemas.create_visa_request import CreateVisaRequest
-from services.exceptions import ( 
+from services.exception.exceptions import ( 
     VisaNotFoundError, 
     VisaAlreadyExistsError,
     ValueRequiredError)
