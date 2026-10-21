@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS tours (
     id SERIAL PRIMARY KEY,
     agency_id INTEGER REFERENCES agencies(id),
-    title VARCHAR(255) NOT NULL,
+    tour_name VARCHAR(255) NOT NULL,
     description TEXT,
     country TEXT[] NOT NULL,
     start_date DATE NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS tours (
 );
 
 -- ALTER TABLE tours
--- ADD CONSTRAINT unique_agency_tour_title
--- UNIQUE (agency_id, title);
+-- ADD CONSTRAINT unique_agency_tour_name
+-- UNIQUE (agency_id, tour_name);
 
 -- ALTER TABLE tours
 -- RENAME COLUMN country TO country;

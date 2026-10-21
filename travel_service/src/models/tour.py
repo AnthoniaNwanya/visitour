@@ -5,7 +5,7 @@ class Tour:
     def __init__(
         self,
         id: int,
-        title: str,
+        tour_name: str,
         description: str,
         country: list[str],
         start_date: datetime,
@@ -17,7 +17,7 @@ class Tour:
         updated_at: datetime
     ):
         self.id = id
-        self.title = title
+        self.tour_name = tour_name
         self.description = description
         self.country = country
         self.start_date = start_date
@@ -27,4 +27,3 @@ class Tour:
         self.status = status
         self.created_at = created_at
         self.updated_at = updated_at
-

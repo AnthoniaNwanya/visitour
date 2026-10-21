@@ -18,7 +18,7 @@ async def get_other_agency_tours(params: GetQueryRequest,
         GetQueryResponse(
             id=tour["id"],
             agency_id=tour["agency_id"],
-            title=tour["title"],
+            tour_name=tour["tour_name"],
             description=tour["description"],
             start_date=tour["start_date"],
             end_date=tour["end_date"],
@@ -44,7 +44,7 @@ async def get_available_tours(params):
         GetQueryResponse(
             id=tour["id"],
             agency_id=tour["agency_id"],
-            title=tour["title"],
+            tour_name=tour["tour_name"],
             description=tour["description"],
             start_date=tour["start_date"],
             end_date=tour["end_date"],
@@ -71,7 +71,7 @@ async def get_agency_tours(params, agency_id):
         GetQueryResponse(
             id=tour["id"],
             agency_id=tour["agency_id"],
-            title=tour["title"],
+            tour_name=tour["tour_name"],
             description=tour["description"],
             start_date=tour["start_date"],
             end_date=tour["end_date"],

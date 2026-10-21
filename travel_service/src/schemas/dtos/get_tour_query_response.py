@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class GetQueryResponse(BaseModel):
     id: int
     agency_id: int
-    title: str
+    tour_name: str
     description: str
     country: list[str]
     start_date: datetime

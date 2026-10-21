@@ -9,7 +9,7 @@ def create(request, agency_id: int, status: TourStatus,):
     query = """
         INSERT INTO tours (
             agency_id,
-            title,
+            tour_name,
             description,
             country,
             start_date,
@@ -25,7 +25,7 @@ def create(request, agency_id: int, status: TourStatus,):
         RETURNING
             id,
             agency_id,
-            title,
+            tour_name,
             description,
             country,
             start_date,
@@ -39,7 +39,7 @@ def create(request, agency_id: int, status: TourStatus,):
         query,
         (
             agency_id,
-            request.title,
+            request.tour_name,
             request.description,
             request.country,
             request.start_date,
@@ -65,7 +65,7 @@ def get_tours(params, agency_id=None, status=None):
         SELECT
             id,
             agency_id,
-            title,
+            tour_name,
             description,
             start_date,
             end_date,
@@ -93,9 +93,9 @@ def get_tours(params, agency_id=None, status=None):
         query += " AND id = %s"
         values.append(params.id)
 
-    if params.title:
-        query += " AND title ILIKE %s"
-        values.append(f"%{params.title}%")
+    if params.tour_name:
+        query += " AND tour_name ILIKE %s"
+        values.append(f"%{params.tour_name}%")
 
     if params.country:
         query += " AND country ILIKE %s"
@@ -148,7 +148,7 @@ def get_tours_for_agency_browsing(
         SELECT
             id,
             agency_id,
-            title,
+            tour_name,
             description,
             start_date,
             end_date,
@@ -174,9 +174,9 @@ def get_tours_for_agency_browsing(
         query += " AND id = %s"
         values.append(params.id)
 
-    if params.title:
-        query += " AND title ILIKE %s"
-        values.append(f"%{params.title}%")
+    if params.tour_name:
+        query += " AND tour_name ILIKE %s"
+        values.append(f"%{params.tour_name}%")
 
     if params.country:
         query += " AND country ILIKE %s"
@@ -229,7 +229,7 @@ def get_tour_id(tour_id):
         SELECT
             id,
             agency_id,
-            title,
+            tour_name,
             description,
             start_date,
             end_date,
@@ -253,18 +253,18 @@ def get_tour_id(tour_id):
 
     return tour
 
-def get_tour_by_title(title: str, agency_id: int):
+def get_tour_by_tour_name(tour_name: str, agency_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=DictCursor)
 
     query = """
-        SELECT id, agency_id, title
+        SELECT id, agency_id, tour_name
         FROM tours
-        WHERE title = %s
+        WHERE tour_name = %s
         AND agency_id = %s
     """
 
-    cursor.execute(query, (title, agency_id))
+    cursor.execute(query, (tour_name, agency_id))
 
     tour = cursor.fetchone()
 
@@ -283,7 +283,7 @@ def update_tour(request, tour_id: int, agency_id: int):
         data = request.model_dump(exclude_unset=True)
 
         allowed_fields = {
-            "title",
+            "tour_name",
             "description",
             "country",
             "start_date",
@@ -302,7 +302,7 @@ def update_tour(request, tour_id: int, agency_id: int):
         if not data:
             cursor.execute(
                 """
-                SELECT id, agency_id, title, description, country,
+                SELECT id, agency_id, tour_name, description, country,
                        start_date, end_date, price, available_slots,
                        status, updated_at
                 FROM tours
@@ -331,7 +331,7 @@ def update_tour(request, tour_id: int, agency_id: int):
             UPDATE tours
             SET {", ".join(fields)}
             WHERE id = %s AND agency_id = %s
-            RETURNING id, agency_id, title, description, country,
+            RETURNING id, agency_id, tour_name, description, country,
                       start_date, end_date, price, available_slots,
                       status, updated_at
         """
@@ -366,7 +366,7 @@ def delete_tour(tour_id: int, agency_id: int):
         RETURNING
             id,
             agency_id,
-            title,
+            tour_name,
             description,
             country,
             start_date,
@@ -393,4 +393,3 @@ def delete_tour(tour_id: int, agency_id: int):
     connection.close()
 
     return tour
-

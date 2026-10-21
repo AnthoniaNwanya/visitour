@@ -8,12 +8,12 @@ from services.exception.exceptions import (
     ValueRequiredError)
 
 async def create_new_tour(request: CreateTourRequest, agency_id: int):
-    existing_title = tour_repository.get_tour_by_title(
-    request.title,
+    existing_tour = tour_repository.get_tour_by_tour_name(
+    request.tour_name,
     agency_id
     )
 
-    if existing_title:
+    if existing_tour:
         raise TourAlreadyExistsError(
         "You already have a tour with this name."
     )
@@ -24,7 +24,7 @@ async def create_new_tour(request: CreateTourRequest, agency_id: int):
     return CreateTourResponse(
         id=tour["id"],
         agency_id=tour["agency_id"],
-        title=tour["title"],
+        tour_name=tour["tour_name"],
         description=tour["description"],
         country=tour["country"],
         start_date=tour["start_date"],
@@ -34,6 +34,4 @@ async def create_new_tour(request: CreateTourRequest, agency_id: int):
         status=tour["status"],
         created_at=tour["created_at"]
     )
-
-
 

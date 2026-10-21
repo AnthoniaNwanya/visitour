@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator
 from datetime import date
 
 class CreateTourRequest(BaseModel):
-    title: str
+    tour_name: str
     description: str
     country: list[str]
     start_date: date
