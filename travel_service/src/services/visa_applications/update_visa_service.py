@@ -2,31 +2,45 @@ from fastapi import HTTPException, Depends
 from schemas.update_visa_request import UpdateVisaRequest
 from services.exception.exceptions import ( 
     VisaNotFoundError, 
-    VisaAlreadyExistsError)
+    VisaAlreadyExistsError,
+    UnauthorizedError)
 from repository import visa_repository
 from schemas.dtos.update_visa_response import UpdateVisaResponse
 from api.dependencies.authorization import get_current_agency
 
 
-async def update_visa(request: UpdateVisaRequest, visa_id: int, agency_id: int = Depends(get_current_agency)):
-    existing_id = visa_repository.get_visa_id(visa_id)
-    if not existing_id:
+async def update_visa(request: UpdateVisaRequest, visa_id: int, current_agency_id: int = Depends(get_current_agency)):
+    existing_visa = visa_repository.get_visa_id(visa_id)
+    if not existing_visa:
         raise VisaNotFoundError("Visa application not found")
-
-    existing_name = visa_repository.get_visa_by_name(
-        request.visa_name,
-        agency_id
-    )
-
-    if existing_name and existing_name["id"] != visa_id:
-        raise VisaAlreadyExistsError(
-            "You already have a visa application with this name."
+    
+    if existing_visa["agency_id"] != current_agency_id:
+        raise UnauthorizedError(
+            "You are not authorized to update this visa"
         )
+
+    if request.visa_name is not None:
+        existing_name = visa_repository.get_visa_by_name(
+            request.visa_name,
+            current_agency_id
+        )
+
+        if existing_name and existing_name["id"] != visa_id:
+            raise VisaAlreadyExistsError(
+                "You already have a visa application with this name."
+            )
 
     visa = visa_repository.update_visa(
         request,
-        visa_id
+        visa_id,
+        current_agency_id
     )
+
+
+    if not visa:
+        raise VisaNotFoundError(
+            "Visa not found or no longer available for update"
+        )
 
     return UpdateVisaResponse(
         id=visa["id"],

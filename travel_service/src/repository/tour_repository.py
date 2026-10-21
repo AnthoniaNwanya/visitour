@@ -136,6 +136,91 @@ def get_tours(params, agency_id=None, status=None):
 
     return tours
 
+
+def get_tours_for_agency_browsing(
+    params,
+    current_agency_id: int
+):
+    connection = get_db_connection()
+    cursor = connection.cursor(cursor_factory=DictCursor)
+
+    query = """
+        SELECT
+            id,
+            agency_id,
+            title,
+            description,
+            start_date,
+            end_date,
+            country,
+            price,
+            available_slots,
+            status,
+            created_at,
+            updated_at
+        FROM tours
+        WHERE (
+            agency_id = %s
+            OR status = %s
+        )
+    """
+
+    values = [
+        current_agency_id,
+        TourStatus.AVAILABLE.value
+    ]
+
+    if params.id is not None:
+        query += " AND id = %s"
+        values.append(params.id)
+
+    if params.title:
+        query += " AND title ILIKE %s"
+        values.append(f"%{params.title}%")
+
+    if params.country:
+        query += " AND country ILIKE %s"
+        values.append(f"%{params.country}%")
+
+    if params.start_date:
+        query += " AND start_date = %s"
+        values.append(params.start_date)
+
+    if params.end_date:
+        query += " AND end_date = %s"
+        values.append(params.end_date)
+
+    if params.available_slots is not None:
+        query += " AND available_slots = %s"
+        values.append(params.available_slots)
+
+    if params.status:
+        status = (
+            params.status.value
+            if hasattr(params.status, "value")
+            else params.status
+        )
+        query += " AND status = %s"
+        values.append(status)
+
+    if params.min_price is not None:
+        query += " AND price >= %s"
+        values.append(params.min_price)
+
+    if params.max_price is not None:
+        query += " AND price <= %s"
+        values.append(params.max_price)
+
+    query += " ORDER BY created_at DESC"
+
+    try:
+        cursor.execute(query, tuple(values))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        connection.close()
+
+
 def get_tour_id(tour_id):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=DictCursor)
@@ -189,97 +274,84 @@ def get_tour_by_title(title: str, agency_id: int):
     return tour
 
 
-def update_tour(request, tour_id):
+
+def update_tour(request, tour_id: int, agency_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(cursor_factory=DictCursor)
 
-    data = request.model_dump(exclude_unset=True)
+    try:
+        data = request.model_dump(exclude_unset=True)
 
-    if not data:
-        cursor.execute(
-            """
-            SELECT
-                id,
-                agency_id,
-                title,
-                description,
-                country,
-                start_date,
-                end_date,
-                price,
-                available_slots,
-                status,
-                updated_at
-            FROM tours
-            WHERE id = %s
-            """,
-            (tour_id,)
-        )
+        allowed_fields = {
+            "title",
+            "description",
+            "country",
+            "start_date",
+            "end_date",
+            "price",
+            "available_slots",
+            "status",
+        }
 
+        data = {
+            field: value
+            for field, value in data.items()
+            if field in allowed_fields
+        }
+
+        if not data:
+            cursor.execute(
+                """
+                SELECT id, agency_id, title, description, country,
+                       start_date, end_date, price, available_slots,
+                       status, updated_at
+                FROM tours
+                WHERE id = %s AND agency_id = %s
+                """,
+                (tour_id, agency_id),
+            )
+            return cursor.fetchone()
+
+        fields = []
+        values = []
+
+        for field, value in data.items():
+            fields.append(f"{field} = %s")
+
+            # Convert enum values before storing them.
+            if hasattr(value, "value"):
+                value = value.value
+
+            values.append(value)
+
+        fields.append("updated_at = CURRENT_TIMESTAMP")
+        values.extend([tour_id, agency_id])
+
+        query = f"""
+            UPDATE tours
+            SET {", ".join(fields)}
+            WHERE id = %s AND agency_id = %s
+            RETURNING id, agency_id, title, description, country,
+                      start_date, end_date, price, available_slots,
+                      status, updated_at
+        """
+
+        cursor.execute(query, values)
         tour = cursor.fetchone()
 
-        cursor.close()
-        connection.close()
+        if tour:
+            connection.commit()
 
         return tour
 
-    allowed_fields = {
-        "title",
-        "description",
-        "country",
-        "start_date",
-        "end_date",
-        "price",
-        "available_slots",
-        "status"
-    }
+    except Exception:
+        connection.rollback()
+        raise
 
-    data = {
-        field: value
-        for field, value in data.items()
-        if field in allowed_fields
-    }
+    finally:
+        cursor.close()
+        connection.close()
 
-    fields = []
-    values = []
-
-    for field, value in data.items():
-        fields.append(f"{field} = %s")
-        values.append(value)
-
-    fields.append("updated_at = CURRENT_TIMESTAMP")
-
-    values.append(tour_id)
-
-    query = f"""
-        UPDATE tours
-        SET
-            {", ".join(fields)}
-        WHERE id = %s
-        RETURNING
-            id,
-            agency_id,
-            title,
-            description,
-            country,
-            start_date,
-            end_date,
-            price,
-            available_slots,
-            status,
-            updated_at
-    """
-
-    cursor.execute(query, values)
-
-    tour = cursor.fetchone()
-
-    connection.commit()
-
-    cursor.close()
-    connection.close()
-
-    return tour
 
 def delete_tour(tour_id: int, agency_id: int):
     connection = get_db_connection()

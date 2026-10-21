@@ -5,11 +5,12 @@ from schemas.dtos.get_visa_query_response import GetQueryResponse
 from models.enums.visa_status import VisaStatus
 
 
-async def get_all_visas(params: VisaQueryRequest):
-    visas = visa_repository.get_visas(params)
+async def get_other_agency_visas(params: VisaQueryRequest,
+    current_agency_id: int):
+    visas = visa_repository.get_visas_for_agency_browsing(params, current_agency_id=current_agency_id)
 
     if not visas:
-        raise VisaNotFoundError("Visa application with specified parameter not found")
+        raise VisaNotFoundError("No visas found with the specified parameters")
     
     return [
         GetQueryResponse(

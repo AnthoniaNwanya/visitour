@@ -13,9 +13,9 @@ from services.exception.exceptions import (
 )
 
 
-async def create_visa_application(request: CreateVisaRequest, agency_id: int = Depends(get_current_agency) ):
+async def create_visa_application(request: CreateVisaRequest, current_agency_id: int = Depends(get_current_agency) ):
     try:
-        return await create_visa_service.create_new_visa(request, agency_id)
+        return await create_visa_service.create_new_visa(request, current_agency_id)
     except ValueRequiredError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except VisaAlreadyExistsError as exc:
@@ -37,9 +37,9 @@ async def get_visa_applications(
         )
 
         if role == "agency":
-            return await get_visa_service.get_agency_visas(
+            return await get_visa_service.get_other_agency_visas(
                 params,
-                agency_id=user_id
+                current_agency_id=user_id
             )
     
     except ForbiddenError as exc:
@@ -47,23 +47,44 @@ async def get_visa_applications(
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-
-async def update_visa_application(request: UpdateVisaRequest, visa_id: int, agency_id: int = Depends(get_current_agency)):
+async def get_my_agency_visa_applications(
+    params: VisaQueryRequest = Depends(),
+    current_user: dict = Depends(get_current_user)):
     try:
-        return await update_visa_service.update_visa(request, visa_id, agency_id )
+        if current_user["role"] != "agency":
+            raise ForbiddenError(
+                "Only agencies can access their own visas"
+            )
+        
+        return await get_visa_service.get_agency_visas(
+            params=params,
+            agency_id=current_user["id"]
+        )
+    
+    except ForbiddenError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+async def update_visa_application(request: UpdateVisaRequest, visa_id: int, current_agency_id: int = Depends(get_current_agency)):
+    try:
+        return await update_visa_service.update_visa(request, visa_id, current_agency_id )
     except ValueRequiredError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except VisaNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except VisaAlreadyExistsError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except UnauthorizedError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-async def delete_visa_application(visa_id: int, agency_id: int = Depends(get_current_agency)):
+async def delete_visa_application(visa_id: int, current_agency_id: int = Depends(get_current_agency)):
     try:
-        return await delete_visa_service.delete_visa(visa_id, agency_id)
+        return await delete_visa_service.delete_visa(visa_id, current_agency_id)
     except VisaNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except Exception as exc:

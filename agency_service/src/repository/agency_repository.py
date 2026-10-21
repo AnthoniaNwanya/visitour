@@ -147,14 +147,17 @@ def get_agency_id(agency_id):
             id,
             agency_name,
             description,
+            first_name,
+            last_name,
             email,
             phone_number,
             address,
             country,
             city,
-            cac_number,
             status,
-            created_at
+            cac_number,
+            created_at,
+            updated_at
         FROM agencies
         WHERE id = %s
         AND

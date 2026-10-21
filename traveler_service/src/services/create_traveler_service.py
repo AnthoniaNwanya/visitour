@@ -49,7 +49,7 @@ def login_traveler(request):
     traveler = traveler_repository.get_traveler_by_email(request.email)
 
     if not traveler:
-        raise TravelerNotFoundError("traveler not found")
+        raise TravelerNotFoundError("Traveler not found")
     
     password_hasher = PasswordHasher()
     try:
