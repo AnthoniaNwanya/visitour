@@ -3,7 +3,7 @@ from datetime import date
 
 class GetQueryRequest(BaseModel):
     id: int|None = None
-    title: str|None = None
+    tour_name: str|None = None
     country: str|None = None
     start_date: date|None = None
     end_date: date|None = None
