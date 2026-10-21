@@ -9,7 +9,6 @@ from services.exception.exceptions import (
     TourNotFoundError,
     ValueRequiredError,
     UnauthorizedError,
-    UnauthorizedError,
     ForbiddenError
 )
 
@@ -38,14 +37,34 @@ async def get_tours(
         )
 
         if role == "agency":
-            return await get_tour_service.get_agency_tours(
+            return await get_tour_service.get_other_agency_tours(
                 params,
-                agency_id=user_id
+                current_agency_id=user_id
             )        
     except ForbiddenError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+async def get_my_agency_tours(
+    params: GetQueryRequest = Depends(),
+    current_user: dict = Depends(get_current_user)):
+    try:
+        if current_user["role"] != "agency":
+            raise ForbiddenError(
+                "Only agencies can access their own tours"
+            )
+        
+        return await get_tour_service.get_agency_tours(
+            params=params,
+            agency_id=current_user["id"]
+        )
+    except ForbiddenError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+ 
 
 async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int = Depends(get_current_agency)):
     try:
@@ -54,6 +73,8 @@ async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int =
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except TourNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except TourAlreadyExistsError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except UnauthorizedError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except Exception as exc:

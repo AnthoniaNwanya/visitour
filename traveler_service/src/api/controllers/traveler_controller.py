@@ -13,7 +13,7 @@ from services import (create_traveler_service,
     get_traveler_service, 
     update_traveler_service,
     delete_traveler_service)
-from api.dependencies.authorization import get_current_traveler
+from api.dependencies.authorization import get_current_traveler, get_current_user
 
 async def register_traveler(request: TravelerSignupRequest):
 
@@ -79,9 +79,9 @@ def login_traveler(request: TravelerLoginRequest):
             detail=str(e)
         )
 
-async def get_travelers(params: GetTravelerQueryRequest = Depends(), current_traveler_id: int = Depends(get_current_traveler)):
+async def get_travelers(params: GetTravelerQueryRequest = Depends()):
     try:
-        return await get_traveler_service.get_travelers(params, current_traveler_id)
+        return await get_traveler_service.get_travelers(params)
     
     except ForbiddenError as e:
         raise HTTPException(
@@ -108,6 +108,64 @@ async def get_travelers(params: GetTravelerQueryRequest = Depends(), current_tra
         )
 
 
+async def get_traveler_for_traveler(current_traveler_id: int = Depends(get_current_traveler)):
+    try:
+        return await get_traveler_service.get_traveler_for_traveler(current_traveler_id)
+    
+    except ForbiddenError as e:
+        raise HTTPException(
+            status_code=403,
+            detail=str(e)
+        )
+    
+    except TravelerNotFoundError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e)
+        )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+async def get_traveler_for_agency(traveler_id:int, current_user: dict = Depends(get_current_user)):
+    try:
+        agency_id = current_user["id"]
+        role = current_user["role"]
+
+        if role != "agency":
+            raise HTTPException(
+                status_code=403,
+                detail="Only agencies can access traveler details"
+            )
+        
+        return await get_traveler_service.get_traveler_for_agency(traveler_id)
+    
+    except ForbiddenError as e:
+        raise HTTPException(
+            status_code=403,
+            detail=str(e)
+        )
+    
+    except TravelerNotFoundError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e)
+        )
+
+    except TravelerAlreadyExistsError as e:
+        raise HTTPException(
+            status_code=409,
+            detail=str(e)
+        )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 async def update_traveler(request: UpdateTravelerRequest, current_traveler_id: int = Depends(get_current_traveler)):
     try:

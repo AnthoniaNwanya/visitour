@@ -116,6 +116,34 @@ def get_agency(agency_id: int):
             status_code=500,
             detail=str(e)
         )
+    
+async def get_agency_for_agency(get_current_agency: int = Depends(get_current_agency)):
+    try:
+        return await get_agency_service.get_agency_for_agency(get_current_agency)
+    
+    except ForbiddenError as e:
+        raise HTTPException(
+            status_code=403,
+            detail=str(e)
+        )
+    
+    except AgencyNotFoundError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e)
+        )
+
+    except AgencyAlreadyExistsError as e:
+        raise HTTPException(
+            status_code=409,
+            detail=str(e)
+        )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 async def update_agency(request: UpdateAgencyRequest, current_agency_id: int = Depends(get_current_agency)):

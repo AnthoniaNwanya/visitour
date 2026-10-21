@@ -7,11 +7,12 @@ from schemas.dtos.get_tour_query_response import GetQueryResponse
 from models.enums.tour_status import TourStatus
 
 
-async def get_all_tours(params: GetQueryRequest):
-    tours = tour_repository.get_tours(params)
+async def get_other_agency_tours(params: GetQueryRequest,
+    current_agency_id: int):
+    tours = tour_repository.get_tours_for_agency_browsing(params, current_agency_id=current_agency_id)
 
     if not tours:
-        raise TourNotFoundError("Tour with specified parameter not found")
+        raise TourNotFoundError("No tours found with specified parameter")
     
     return [
         GetQueryResponse(

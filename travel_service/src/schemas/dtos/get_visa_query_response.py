@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from pydantic import BaseModel
 
 
@@ -10,7 +11,7 @@ class GetQueryResponse(BaseModel):
     visa_type_id: int
     processing_time_value: int
     processing_time_unit: str
-    processing_fee: datetime
+    processing_fee: Decimal
     status: str
     created_at: datetime
     updated_at: datetime
