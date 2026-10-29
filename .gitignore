@@ -4,3 +4,6 @@
 __pycache__/
 *.pyc
 **/src/repository/database/config.json
+!booking_service/src/repository/database/config.json
+!traveler_service/src/repository/database/config.json
+!travel_service/src/repository/database/config.json

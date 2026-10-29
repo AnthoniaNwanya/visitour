@@ -1,0 +1,12 @@
+{
+    "app": {
+        "name": "Travel Service",
+        "host": "127.0.0.1",
+        "port": 8002,
+        "debug": true
+    },
+    "api": {
+        "prefix": "/api",
+        "version": "v1"
+    }
+}
