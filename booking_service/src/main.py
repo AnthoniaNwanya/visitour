@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 
-from api.routers.routes import bookingrouter
+from api.routers.routes import (
+    agencybookingrouter,
+    bookingrouter,
+    cartrouter,
+    paymentrouter,
+)
 
 
 app = FastAPI(
@@ -8,6 +13,9 @@ app = FastAPI(
 )
 
 app.include_router(bookingrouter)
+app.include_router(cartrouter)
+app.include_router(paymentrouter)
+app.include_router(agencybookingrouter)
 
 
 @app.get("/")

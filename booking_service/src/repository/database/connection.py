@@ -1,61 +1,40 @@
-import os 
+import os
 
 import psycopg2
 from dotenv import load_dotenv
-import json
 
 load_dotenv()
 
-with open('config.json') as config_file:
-    config = json.load(config_file)
-
-db_config = config['postgres']
 
 def get_db_connection():
-    try:
-        connection = psycopg2.connect(
-            host=os.getenv('DATABASE_HOST'),
-            port=os.getenv('DATABASE_PORT'),
-            database=os.getenv('DATABASE_NAME'),
-            user=os.getenv('DATABASE_USER'),
-            password=os.getenv('DATABASE_PASSWORD')
-        )
-        return connection
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
-        return None
+    return psycopg2.connect(
+        host=os.getenv("DATABASE_HOST"),
+        port=os.getenv("DATABASE_PORT"),
+        database=os.getenv("DATABASE_NAME"),
+        user=os.getenv("DATABASE_USER"),
+        password=os.getenv("DATABASE_PASSWORD"),
+    )
 
 
 def read_from_db(query, params=None):
-    conn = get_db_connection()
-    if conn is None:
-        return None
-
+    connection = get_db_connection()
     try:
-        cursor = conn.cursor()
-        cursor.execute(query, params)
-        result = cursor.fetchall()
-        return result
-    except Exception as e:
-        print(f"Error reading from the database: {e}")
-        return None
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            return cursor.fetchall()
     finally:
-        cursor.close()
-        conn.close()
+        connection.close()
+
 
 def write_to_db(query, params=None):
-    conn = get_db_connection()
-    if conn is None:
-        return False
-
+    connection = get_db_connection()
     try:
-        cursor = conn.cursor()
-        cursor.execute(query, params)
-        conn.commit()
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+        connection.commit()
         return True
-    except Exception as e:
-        print(f"Error writing to the database: {e}")
-        return False
+    except Exception:
+        connection.rollback()
+        raise
     finally:
-        cursor.close()
-        conn.close()
+        connection.close()
