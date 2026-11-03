@@ -1,0 +1,7 @@
+services:
+  agency_service:
+    build: .
+    container_name: agencyservice
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

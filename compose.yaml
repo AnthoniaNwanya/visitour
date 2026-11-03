@@ -1,0 +1,38 @@
+
+services:
+  agency_service:
+    build:
+      context: ./agency_service
+    env_file:
+      - ./agency_service/.env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  traveler_service:
+    build:
+      context: ./traveler_service
+    env_file:
+      - ./traveler_service/.env
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  travel_service:
+    build:
+      context: ./travel_service
+    env_file:
+      - ./travel_service/.env
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+  booking_service:
+    build:
+      context: ./booking_service
+    env_file:
+      - ./booking_service/.env
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+

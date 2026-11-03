@@ -1,0 +1,8 @@
+
+services:
+  travel_service:
+    build: .
+    container_name: travelservice
+    ports:
+      - "8002:8002"
+    restart: unless-stopped

@@ -1,0 +1,8 @@
+
+services:
+  booking_service:
+    build: .
+    container_name: bookingservice
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
