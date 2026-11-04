@@ -16,11 +16,13 @@ def create(request, agency_id: int, status: TourStatus,):
             end_date,
             price,
             available_slots,
+            images,
+            cover_image,
             status
         )
         VALUES (
             %s, %s, %s, %s, %s,
-            %s, %s, %s, %s
+            %s, %s, %s, %s, %s, %s
         )
         RETURNING
             id,
@@ -32,6 +34,8 @@ def create(request, agency_id: int, status: TourStatus,):
             end_date,
             price,
             available_slots,
+            images,
+            cover_image,
             status,
             created_at
     """
@@ -46,6 +50,8 @@ def create(request, agency_id: int, status: TourStatus,):
             request.end_date,
             request.price,
             request.available_slots,
+            request.images,
+            request.cover_image,
             status.value
         )
     )
@@ -72,6 +78,8 @@ def get_tours(params, agency_id=None, status=None):
             country,
             price,
             available_slots,
+            images,
+            cover_image,
             status,
             created_at,
             updated_at
@@ -155,6 +163,8 @@ def get_tours_for_agency_browsing(
             country,
             price,
             available_slots,
+            images,
+            cover_image,
             status,
             created_at,
             updated_at
@@ -236,6 +246,8 @@ def get_tour_id(tour_id):
             country,
             price,
             available_slots,                                                                        
+            images,
+            cover_image,
             status,
             created_at,
             updated_at
@@ -290,6 +302,8 @@ def update_tour(request, tour_id: int, agency_id: int):
             "end_date",
             "price",
             "available_slots",
+            "images",
+            "cover_image",
             "status",
         }
 
@@ -299,12 +313,31 @@ def update_tour(request, tour_id: int, agency_id: int):
             if field in allowed_fields
         }
 
+        if "images" in data or "cover_image" in data:
+            cursor.execute(
+                "SELECT images, cover_image FROM tours WHERE id = %s AND agency_id = %s",
+                (tour_id, agency_id),
+            )
+            current_images = cursor.fetchone()
+            if not current_images:
+                return None
+            if "images" in data and data["images"] is None:
+                raise ValueError("images must be an array; use an empty array to remove images")
+            images = data.get("images", current_images["images"] or [])
+            if not images and "cover_image" not in data:
+                data["cover_image"] = None
+            cover_image = data.get("cover_image", current_images["cover_image"])
+            if images and not cover_image:
+                raise ValueError("cover_image is required when images are provided")
+            if cover_image and cover_image not in images:
+                raise ValueError("cover_image must be one of images")
+
         if not data:
             cursor.execute(
                 """
                 SELECT id, agency_id, tour_name, description, country,
                        start_date, end_date, price, available_slots,
-                       status, updated_at
+                       images, cover_image, status, updated_at
                 FROM tours
                 WHERE id = %s AND agency_id = %s
                 """,
@@ -333,7 +366,7 @@ def update_tour(request, tour_id: int, agency_id: int):
             WHERE id = %s AND agency_id = %s
             RETURNING id, agency_id, tour_name, description, country,
                       start_date, end_date, price, available_slots,
-                      status, updated_at
+                      images, cover_image, status, updated_at
         """
 
         cursor.execute(query, values)

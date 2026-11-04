@@ -38,6 +38,7 @@ def create(request, status: AgencyStatus, password_hash: str):
             city,
             status,
             cac_number,
+            profilepicture,
             created_at
     """
     cursor.execute(
@@ -84,6 +85,7 @@ def get_all_agencies(params):
             city,
             status,
             cac_number,
+            profilepicture,
             created_at,
             updated_at
         FROM agencies
@@ -156,6 +158,7 @@ def get_agency_id(agency_id):
             city,
             status,
             cac_number,
+            profilepicture,
             created_at,
             updated_at
         FROM agencies
@@ -239,6 +242,7 @@ def update_agency(current_agency_id: int, request, password_hash=None):
                 city,
                 status,
                 cac_number,
+                profilepicture,
                 updated_at
             FROM agencies
             WHERE id = %s
@@ -262,6 +266,7 @@ def update_agency(current_agency_id: int, request, password_hash=None):
         "address",
         "country",
         "city",
+        "profilepicture",
         "password_hash",
     }
 
@@ -300,6 +305,7 @@ def update_agency(current_agency_id: int, request, password_hash=None):
             city,
             status,
             cac_number,
+            profilepicture,
             updated_at
     """
 
@@ -312,6 +318,24 @@ def update_agency(current_agency_id: int, request, password_hash=None):
     cursor.close()
     connection.close()
 
+    return agency
+
+def update_profilepicture(current_agency_id: int, profilepicture: str):
+    connection = get_db_connection()
+    cursor = connection.cursor(cursor_factory=DictCursor)
+    cursor.execute(
+        """
+        UPDATE agencies
+        SET profilepicture = %s, updated_at = CURRENT_TIMESTAMP
+        WHERE id = %s
+        RETURNING id, profilepicture
+        """,
+        (profilepicture, current_agency_id),
+    )
+    agency = cursor.fetchone()
+    connection.commit()
+    cursor.close()
+    connection.close()
     return agency
 
 def delete_agency(current_agency_id: int):

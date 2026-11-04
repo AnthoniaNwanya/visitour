@@ -35,6 +35,7 @@ def create(request, password_hash: str):
             city,
             country,
             nationality,
+            profilepicture,
             status,
             created_at
     """
@@ -78,6 +79,7 @@ def get_all_travelers(params):
             city,
             country,
             nationality,
+            profilepicture,
             status,
             created_at,
             updated_at
@@ -141,6 +143,7 @@ def get_traveler_id(traveler_id):
             city,
             country,
             nationality,
+            profilepicture,
             status,
             created_at,
             updated_at
@@ -204,6 +207,7 @@ def update_traveler(request, current_traveler_id: int, password_hash=None):
                 city,
                 country,
                 nationality,
+                profilepicture,
                 status,
                 created_at,
                 updated_at
@@ -231,6 +235,7 @@ def update_traveler(request, current_traveler_id: int, password_hash=None):
         "city",
         "country",
         "nationality",
+        "profilepicture",
         "status",
     }
 
@@ -267,6 +272,7 @@ def update_traveler(request, current_traveler_id: int, password_hash=None):
             city,
             country,
             nationality,
+            profilepicture,
             status,
             updated_at
     """
@@ -280,6 +286,24 @@ def update_traveler(request, current_traveler_id: int, password_hash=None):
     cursor.close()
     connection.close()
 
+    return traveler
+
+def update_profilepicture(current_traveler_id: int, profilepicture: str):
+    connection = get_db_connection()
+    cursor = connection.cursor(cursor_factory=DictCursor)
+    cursor.execute(
+        """
+        UPDATE travelers
+        SET profilepicture = %s, updated_at = CURRENT_TIMESTAMP
+        WHERE id = %s
+        RETURNING id, profilepicture
+        """,
+        (profilepicture, current_traveler_id),
+    )
+    traveler = cursor.fetchone()
+    connection.commit()
+    cursor.close()
+    connection.close()
     return traveler
 
 def delete_traveler(current_traveler_id: int):
@@ -322,4 +346,3 @@ def delete_traveler(current_traveler_id: int):
     connection.close()
 
     return traveler
-

@@ -10,4 +10,5 @@ class UpdateVisaRequest(BaseModel):
     processing_time_unit: str | None = None
     processing_fee: Decimal | None = None
     status: str | None = None
-
+    images: list[str] | None = None
+    cover_image: str | None = None

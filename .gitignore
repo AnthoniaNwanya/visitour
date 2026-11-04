@@ -1,9 +1,13 @@
 .env
+**/.env
 .env.*
 !.env.example
 __pycache__/
 *.pyc
 **/src/repository/database/config.json
+agency_service/media/
+traveler_service/media/
+travel_service/media/
 !booking_service/src/repository/database/config.json
 !traveler_service/src/repository/database/config.json
 !travel_service/src/repository/database/config.json

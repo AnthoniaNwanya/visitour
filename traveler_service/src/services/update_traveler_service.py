@@ -51,5 +51,6 @@ async def update_traveler(request: UpdateTravelerRequest, current_traveler_id: i
         country=traveler["country"],
         nationality=traveler["nationality"],
         status=traveler["status"],
+        profilepicture=traveler["profilepicture"],
         updated_at=traveler["updated_at"]
     )

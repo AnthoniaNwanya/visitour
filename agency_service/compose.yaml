@@ -4,4 +4,6 @@ services:
     container_name: agencyservice
     ports:
       - "8000:8000"
+    volumes:
+      - ./media:/app/media
     restart: unless-stopped

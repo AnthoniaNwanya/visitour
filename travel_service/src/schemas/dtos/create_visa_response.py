@@ -11,6 +11,8 @@ class CreateVisaResponse(BaseModel):
     processing_time_value: int
     processing_time_unit: str
     processing_fee: Decimal
+    images: list[str]
+    cover_image: str | None = None
     status: str
     created_at: datetime
   

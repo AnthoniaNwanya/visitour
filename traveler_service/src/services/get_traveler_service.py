@@ -24,6 +24,7 @@ async def get_travelers(params: GetTravelerQueryRequest):
         country=traveler["country"],
         nationality=traveler["nationality"],
         status=traveler["status"],
+        profilepicture=traveler["profilepicture"],
         created_at=traveler["created_at"],
         updated_at= traveler["updated_at"]
         )
@@ -47,6 +48,7 @@ async def get_traveler_for_traveler(current_traveler_id):
         country=traveler["country"],
         nationality=traveler["nationality"],
         status=traveler["status"],
+        profilepicture=traveler["profilepicture"],
         created_at=traveler["created_at"],
         updated_at= traveler["updated_at"]
         )
@@ -69,6 +71,7 @@ async def get_traveler_for_agency(traveler_id: int):
         country=traveler["country"],
         nationality=traveler["nationality"],
         status=traveler["status"],
+        profilepicture=traveler["profilepicture"],
         created_at=traveler["created_at"],
         updated_at= traveler["updated_at"]
     )

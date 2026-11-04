@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from services.exception.exceptions import (AgencyAlreadyExistsError, 
     BadRequest,
     AgencyNotFoundError, 
@@ -13,6 +13,7 @@ from schemas.validate_cac_request import ValidateCACRequest
 from schemas.update_agency_request import UpdateAgencyRequest
 from services import create_agency_service, get_agency_service, update_agency_service, delete_agency_service, cac_validation
 from api.dependencies.authorization import get_current_agency
+from media_storage import parse_upload_request
 
 async def register_agency(request: AgencySignupRequest):
 
@@ -146,9 +147,18 @@ async def get_agency_for_agency(get_current_agency: int = Depends(get_current_ag
         )
 
 
-async def update_agency(request: UpdateAgencyRequest, current_agency_id: int = Depends(get_current_agency)):
+async def update_agency(request: Request, current_agency_id: int = Depends(get_current_agency)):
+    update_request = await parse_upload_request(
+        request,
+        UpdateAgencyRequest,
+        "profilepicture",
+        "profilepictures",
+    )
     try:
-        return await update_agency_service.update_agency(request, current_agency_id)
+        return await update_agency_service.update_agency(
+            update_request,
+            current_agency_id,
+        )
     
     except AgencyNotFoundError as e:
         raise HTTPException(
@@ -179,7 +189,6 @@ async def update_agency(request: UpdateAgencyRequest, current_agency_id: int = D
             status_code=500,
             detail=str(e)
         )
-
 
 async def delete_agency(current_agency_id: int = Depends(get_current_agency)):
     try:

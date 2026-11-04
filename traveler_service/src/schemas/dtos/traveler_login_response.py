@@ -13,6 +13,7 @@ class TravelerLoginResponse(BaseModel):
     country: str
     nationality: str
     status: str
+    profilepicture: str | None = None
     access_token: str
     token_type: str
     created_at: datetime

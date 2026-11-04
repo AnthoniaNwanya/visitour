@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from services.exception.exceptions import (
     TravelerAlreadyExistsError, 
     TravelerNotFoundError, 
@@ -14,6 +14,7 @@ from services import (create_traveler_service,
     update_traveler_service,
     delete_traveler_service)
 from api.dependencies.authorization import get_current_traveler, get_current_user
+from media_storage import parse_upload_request
 
 async def register_traveler(request: TravelerSignupRequest):
 
@@ -167,9 +168,18 @@ async def get_traveler_for_agency(traveler_id:int, current_user: dict = Depends(
             detail=str(e)
         )
 
-async def update_traveler(request: UpdateTravelerRequest, current_traveler_id: int = Depends(get_current_traveler)):
+async def update_traveler(request: Request, current_traveler_id: int = Depends(get_current_traveler)):
+    update_request = await parse_upload_request(
+        request,
+        UpdateTravelerRequest,
+        "profilepicture",
+        "profilepictures",
+    )
     try:
-        return await update_traveler_service.update_traveler(request, current_traveler_id=current_traveler_id)
+        return await update_traveler_service.update_traveler(
+            update_request,
+            current_traveler_id=current_traveler_id,
+        )
     
     except TravelerNotFoundError as e:
         raise HTTPException(
@@ -200,7 +210,6 @@ async def update_traveler(request: UpdateTravelerRequest, current_traveler_id: i
             status_code=500,
             detail=str(e)
         )
-
 
 async def delete_traveler(current_traveler_id: int = Depends(get_current_traveler)):
     try:

@@ -1,5 +1,6 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException, Depends, Request
 from api.dependencies.authorization import get_current_agency, get_current_user
+from media_storage import parse_upload_request
 from schemas.get_tour_query_request import GetQueryRequest
 from schemas.create_tour_request import CreateTourRequest
 from schemas.update_tour_request import UpdateTourRequest
@@ -13,10 +14,18 @@ from services.exception.exceptions import (
 )
 
 
-async def create_tour(request: CreateTourRequest, agency_id: int = Depends(get_current_agency) ):
+async def create_tour(request: Request, agency_id: int = Depends(get_current_agency) ):
+    create_request = await parse_upload_request(
+        request,
+        CreateTourRequest,
+        "images",
+        "tours",
+    )
     try:
-        return await create_tour_service.create_new_tour(request, agency_id)
+        return await create_tour_service.create_new_tour(create_request, agency_id)
     except ValueRequiredError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except TourAlreadyExistsError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
@@ -66,10 +75,22 @@ async def get_my_agency_tours(
         raise HTTPException(status_code=500, detail=str(exc)) from exc
  
 
-async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int = Depends(get_current_agency)):
+async def update_tour(request: Request, tour_id: int, agency_id: int = Depends(get_current_agency)):
+    update_request = await parse_upload_request(
+        request,
+        UpdateTourRequest,
+        "images",
+        "tours",
+    )
     try:
-        return await update_tour_service.update_tour(request, tour_id, agency_id )
+        return await update_tour_service.update_tour(
+            update_request,
+            tour_id,
+            agency_id,
+        )
     except ValueRequiredError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except TourNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc

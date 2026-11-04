@@ -12,6 +12,8 @@ class GetQueryResponse(BaseModel):
     end_date: datetime
     price: int
     available_slots: int
+    images: list[str]
+    cover_image: str | None = None
     status: str
     created_at: datetime
     updated_at: datetime

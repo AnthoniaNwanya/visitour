@@ -13,5 +13,6 @@ class UpdateTravelerResponse(BaseModel):
     country: str 
     nationality: str 
     status: str
+    profilepicture: str | None = None
     updated_at: datetime
     

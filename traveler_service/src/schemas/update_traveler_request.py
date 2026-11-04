@@ -15,6 +15,7 @@ class UpdateTravelerRequest(BaseModel):
     country: str | None = None
     nationality: str | None = None
     status: str | None = None
+    profilepicture: str | None = None
 
 
 

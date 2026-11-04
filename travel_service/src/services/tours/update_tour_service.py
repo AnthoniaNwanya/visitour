@@ -52,6 +52,8 @@ async def update_tour(request: UpdateTourRequest, tour_id: int, agency_id: int):
         end_date=tour["end_date"],
         price=tour["price"],
         available_slots=tour["available_slots"],
+        images=tour["images"],
+        cover_image=tour["cover_image"],
         status=tour["status"],
         updated_at=tour["updated_at"]
     )

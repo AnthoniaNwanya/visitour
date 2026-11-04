@@ -17,7 +17,43 @@ travelerrouter.get("/agency/{traveler_id}")(
 )
 travelerrouter.get("/profile")(traveler_controller.get_traveler_for_traveler)
 
-travelerrouter.put("/edit")(traveler_controller.update_traveler)
+travelerrouter.put(
+    "/edit",
+    openapi_extra={
+        "requestBody": {
+            "required": True,
+            "content": {
+                "multipart/form-data": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "first_name": {"type": "string"},
+                            "last_name": {"type": "string"},
+                            "email": {"type": "string"},
+                            "phone_number": {"type": "string"},
+                            "date_of_birth": {"type": "string", "format": "date"},
+                            "address": {"type": "string"},
+                            "city": {"type": "string"},
+                            "country": {"type": "string"},
+                            "nationality": {"type": "string"},
+                            "status": {"type": "string"},
+                            "profilepicture": {
+                                "type": "string",
+                                "format": "binary",
+                            },
+                            "password": {"type": "string"},
+                            "confirm_password": {"type": "string"},
+                            "data": {
+                                "type": "string",
+                                "description": "Legacy JSON object. Prefer individual named fields.",
+                            },
+                        },
+                    }
+                },
+                "application/json": {"schema": {"type": "object"}},
+            },
+        }
+    },
+)(traveler_controller.update_traveler)
 
 travelerrouter.delete("/delete")(traveler_controller.delete_traveler)
-

@@ -15,12 +15,14 @@ def create(request, agency_id: int, status: VisaStatus,):
             processing_time_value,
             processing_time_unit,
             processing_fee,
+            images,
+            cover_image,
             status
         
         )
         VALUES (
             %s, %s, %s, %s, %s,
-            %s, %s, %s
+            %s, %s, %s, %s, %s
         )
         RETURNING
             id,
@@ -31,6 +33,8 @@ def create(request, agency_id: int, status: VisaStatus,):
             processing_time_value,
             processing_time_unit,
             processing_fee,
+            images,
+            cover_image,
             status,
             created_at
     """
@@ -44,6 +48,8 @@ def create(request, agency_id: int, status: VisaStatus,):
             request.processing_time_value,
             request.processing_time_unit,
             request.processing_fee,
+            request.images,
+            request.cover_image,
             status.value
         )
     )
@@ -70,6 +76,8 @@ def get_visas(params, agency_id=None, status=None):
             processing_time_value,
             processing_time_unit,
             processing_fee,
+            images,
+            cover_image,
             status,
             created_at,
             updated_at
@@ -135,6 +143,8 @@ def get_visas_for_agency_browsing(
             processing_time_value,
             processing_time_unit,
             processing_fee,
+            images,
+            cover_image,
             status,
             created_at,
             updated_at
@@ -199,6 +209,8 @@ def get_visa_id(visa_id):
             processing_time_value,
             processing_time_unit,
             processing_fee,
+            images,
+            cover_image,
             status,
             created_at,
             updated_at
@@ -252,6 +264,8 @@ def update_visa(request, visa_id: int, agency_id: int):
             "processing_time_value",
             "processing_time_unit",
             "processing_fee",
+            "images",
+            "cover_image",
             "status"
         }
 
@@ -260,6 +274,29 @@ def update_visa(request, visa_id: int, agency_id: int):
             for field, value in data.items()
             if field in allowed_fields
         }
+
+        if "images" in data or "cover_image" in data:
+            cursor.execute(
+                """
+                SELECT images, cover_image
+                FROM visa_applications
+                WHERE id = %s AND agency_id = %s
+                """,
+                (visa_id, agency_id),
+            )
+            current_images = cursor.fetchone()
+            if not current_images:
+                return None
+            if "images" in data and data["images"] is None:
+                raise ValueError("images must be an array; use an empty array to remove images")
+            images = data.get("images", current_images["images"] or [])
+            if not images and "cover_image" not in data:
+                data["cover_image"] = None
+            cover_image = data.get("cover_image", current_images["cover_image"])
+            if images and not cover_image:
+                raise ValueError("cover_image is required when images are provided")
+            if cover_image and cover_image not in images:
+                raise ValueError("cover_image must be one of images")
 
         # If no fields were provided, return the visa only
         # if it belongs to the authenticated agency.
@@ -275,6 +312,8 @@ def update_visa(request, visa_id: int, agency_id: int):
                     processing_time_value,
                     processing_time_unit,
                     processing_fee,
+                    images,
+                    cover_image,
                     status,
                     updated_at
                 FROM visa_applications
@@ -317,6 +356,8 @@ def update_visa(request, visa_id: int, agency_id: int):
                 processing_time_value,
                 processing_time_unit,
                 processing_fee,
+                images,
+                cover_image,
                 status,
                 updated_at
         """
@@ -357,6 +398,8 @@ def delete_visa(visa_id: int, agency_id: int):
             processing_time_value,
             processing_time_unit,
             processing_fee,
+            images,
+            cover_image,
             status,
             updated_at
     """
@@ -377,4 +420,3 @@ def delete_visa(visa_id: int, agency_id: int):
     connection.close()
 
     return visa
-

@@ -10,4 +10,5 @@ class UpdateTourRequest(BaseModel):
     price: int|None = None
     available_slots: int|None = None
     status: str|None = None
-    
+    images: list[str] | None = None
+    cover_image: str | None = None

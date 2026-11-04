@@ -14,6 +14,7 @@ class GetQueryResponse(BaseModel):
     city: str
     cac_number: str
     status: str
+    profilepicture: str | None = None
     created_at: datetime
     updated_at: datetime
     

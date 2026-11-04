@@ -13,6 +13,7 @@ class AgencyLoginResponse(BaseModel):
     country: str
     city: str
     cac_number: str
+    profilepicture: str | None = None
     status: str
     access_token: str
     token_type: str

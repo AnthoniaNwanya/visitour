@@ -5,4 +5,6 @@ services:
     container_name: travelservice
     ports:
       - "8002:8002"
+    volumes:
+      - ./media:/app/media
     restart: unless-stopped

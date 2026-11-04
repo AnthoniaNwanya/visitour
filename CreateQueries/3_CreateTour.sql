@@ -8,10 +8,15 @@ CREATE TABLE IF NOT EXISTS tours (
     end_date DATE NOT NULL,
     price DECIMAL NOT NULL,
     available_slots INTEGER NOT NULL,
+    images TEXT[] NOT NULL DEFAULT '{}',
+    cover_image TEXT,
     status VARCHAR(20) DEFAULT 'AVAILABLE',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE tours ADD COLUMN IF NOT EXISTS images TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE tours ADD COLUMN IF NOT EXISTS cover_image TEXT;
 
 -- ALTER TABLE tours
 -- ADD CONSTRAINT unique_agency_tour_name

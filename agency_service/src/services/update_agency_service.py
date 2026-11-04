@@ -54,5 +54,6 @@ async def update_agency(request: UpdateAgencyRequest, current_agency_id: int):
         city=agency["city"],
         cac_number=agency["cac_number"],
         status=agency["status"],
+        profilepicture=agency["profilepicture"],
         updated_at=agency["updated_at"]
     )

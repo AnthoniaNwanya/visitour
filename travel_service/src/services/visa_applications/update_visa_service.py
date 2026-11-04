@@ -51,6 +51,8 @@ async def update_visa(request: UpdateVisaRequest, visa_id: int, current_agency_i
         processing_time_value=visa["processing_time_value"],
         processing_time_unit=visa["processing_time_unit"],
         processing_fee=visa["processing_fee"],
+        images=visa["images"],
+        cover_image=visa["cover_image"],
         status=visa["status"],
         updated_at=visa["updated_at"]
     )

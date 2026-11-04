@@ -1,12 +1,24 @@
-
 services:
   agency_service:
     build:
       context: ./agency_service
     env_file:
       - ./agency_service/.env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "8000:8000"
+    volumes:
+      - ./agency_service/media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - visitour_network
     restart: unless-stopped
 
   traveler_service:
@@ -14,8 +26,21 @@ services:
       context: ./traveler_service
     env_file:
       - ./traveler_service/.env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "8001:8001"
+    volumes:
+      - ./traveler_service/media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - visitour_network
     restart: unless-stopped
 
   travel_service:
@@ -23,8 +48,21 @@ services:
       context: ./travel_service
     env_file:
       - ./travel_service/.env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "8002:8002"
+    volumes:
+      - ./travel_service/media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - visitour_network
     restart: unless-stopped
 
   booking_service:
@@ -32,7 +70,45 @@ services:
       context: ./booking_service
     env_file:
       - ./booking_service/.env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - visitour_network
     restart: unless-stopped
 
+  postgres:
+    image: postgres:18
+    container_name: visitour_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - visitour_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - visitour_network
+
+volumes:
+  visitour_postgres_data:
+    name: visitour_postgres_data
+
+networks:
+  visitour_network:
+    driver: bridge

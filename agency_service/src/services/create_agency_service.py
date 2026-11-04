@@ -64,6 +64,7 @@ async def create_new_agency(request):
         city=agency["city"],
         cac_number=agency["cac_number"],
         status=agency["status"],
+        profilepicture=agency["profilepicture"],
         created_at=agency["created_at"]
     )
  
@@ -112,6 +113,7 @@ def login_agency(request):
         city=agency["city"],
         status=agency["status"],
         cac_number=agency["cac_number"],
+        profilepicture=agency["profilepicture"],
         created_at=agency["created_at"],
         access_token= access_token,
         token_type="bearer"

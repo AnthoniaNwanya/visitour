@@ -30,9 +30,10 @@ async def create_new_visa(request: CreateVisaRequest, agency_id: int):
         processing_time_value=visa["processing_time_value"],
         processing_time_unit=visa["processing_time_unit"],
         processing_fee=visa["processing_fee"],
+        images=visa["images"],
+        cover_image=visa["cover_image"],
         status=visa["status"],
         created_at=visa["created_at"]
     )
-
 
 

@@ -13,4 +13,5 @@ class TravelerSignupResponse(BaseModel):
     country: str
     nationality: str
     status: str
+    profilepicture: str | None = None
     created_at: datetime

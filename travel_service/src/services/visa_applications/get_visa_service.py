@@ -22,6 +22,8 @@ async def get_other_agency_visas(params: VisaQueryRequest,
             processing_time_value=visa["processing_time_value"],
             processing_time_unit=visa["processing_time_unit"],
             processing_fee=visa["processing_fee"],
+            images=visa["images"],
+            cover_image=visa["cover_image"],
             status=visa["status"],
             created_at=visa["created_at"],
             updated_at= visa["updated_at"]
@@ -48,6 +50,8 @@ async def get_available_visas(params):
             processing_time_value=visa["processing_time_value"],
             processing_time_unit=visa["processing_time_unit"],
             processing_fee=visa["processing_fee"],
+            images=visa["images"],
+            cover_image=visa["cover_image"],
             status=visa["status"],
             created_at=visa["created_at"],
             updated_at= visa["updated_at"]
@@ -74,6 +78,8 @@ async def get_agency_visas(params, agency_id):
             processing_time_value=visa["processing_time_value"],
             processing_time_unit=visa["processing_time_unit"],
             processing_fee=visa["processing_fee"],
+            images=visa["images"],
+            cover_image=visa["cover_image"],
             status=visa["status"],
             created_at=visa["created_at"],
             updated_at= visa["updated_at"]

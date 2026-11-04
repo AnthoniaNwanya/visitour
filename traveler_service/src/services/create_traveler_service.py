@@ -42,6 +42,7 @@ async def create_traveler(request):
         country=traveler["country"],
         nationality=traveler["nationality"],
         status=traveler["status"],
+        profilepicture=traveler["profilepicture"],
         created_at=traveler["created_at"]
     )
  
@@ -81,6 +82,7 @@ def login_traveler(request):
         country=traveler["country"],
         nationality=traveler["nationality"],
         status=traveler["status"],
+        profilepicture=traveler["profilepicture"],
         created_at=traveler["created_at"],
         access_token= access_token,
         token_type="bearer"

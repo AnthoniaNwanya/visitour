@@ -26,6 +26,7 @@ async def get_all_agencies(params: GetQueryRequest):
         country=agency["country"],
         city=agency["city"],
         status=agency["status"],
+        profilepicture=agency["profilepicture"],
         cac_number=agency["cac_number"],
         created_at=agency["created_at"],
         updated_at= agency["updated_at"]
@@ -52,6 +53,7 @@ async def get_agency_for_agency(get_current_agency: int):
         country=agency["country"],
         city=agency["city"],
         status=agency["status"],
+        profilepicture=agency["profilepicture"],
         cac_number=agency["cac_number"],
         created_at=agency["created_at"],
         updated_at= agency["updated_at"]

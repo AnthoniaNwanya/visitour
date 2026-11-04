@@ -10,6 +10,7 @@ class UpdateAgencyRequest(BaseModel):
     address: str|None = None
     country: str|None = None
     city: str|None = None
+    profilepicture: str|None = None
     password: str|None = None
     confirm_password: str|None = None
 

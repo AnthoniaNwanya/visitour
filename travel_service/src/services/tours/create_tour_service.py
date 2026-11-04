@@ -31,7 +31,8 @@ async def create_new_tour(request: CreateTourRequest, agency_id: int):
         end_date=tour["end_date"],
         price=tour["price"],
         available_slots=tour["available_slots"],
+        images=tour["images"],
+        cover_image=tour["cover_image"],
         status=tour["status"],
         created_at=tour["created_at"]
     )
-

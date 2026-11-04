@@ -25,6 +25,8 @@ async def get_other_agency_tours(params: GetQueryRequest,
             country=tour["country"],
             price=tour["price"],
             available_slots=tour["available_slots"],
+            images=tour["images"],
+            cover_image=tour["cover_image"],
             status=tour["status"],
             created_at=tour["created_at"],
             updated_at= tour["updated_at"]
@@ -51,6 +53,8 @@ async def get_available_tours(params):
             country=tour["country"],
             price=tour["price"],
             available_slots=tour["available_slots"],
+            images=tour["images"],
+            cover_image=tour["cover_image"],
             status=tour["status"],
             created_at=tour["created_at"],
             updated_at= tour["updated_at"]
@@ -78,6 +82,8 @@ async def get_agency_tours(params, agency_id):
             country=tour["country"],
             price=tour["price"],
             available_slots=tour["available_slots"],
+            images=tour["images"],
+            cover_image=tour["cover_image"],
             status=tour["status"],
             created_at=tour["created_at"],
             updated_at= tour["updated_at"]
