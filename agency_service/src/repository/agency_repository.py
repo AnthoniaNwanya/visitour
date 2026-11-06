@@ -1,4 +1,4 @@
-from repository.database.connection import get_db_connection
+from connection import get_db_connection
 from models.enums.agency_status import AgencyStatus
 from psycopg2.extras import DictCursor
 from datetime import timedelta

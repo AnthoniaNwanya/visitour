@@ -1,0 +1,9 @@
+{
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/MigrationsDB",
+    "${workspaceFolder}/agency_service/src",
+    "${workspaceFolder}/traveler_service/src",
+    "${workspaceFolder}/travel_service/src",
+    "${workspaceFolder}/booking_service/src"
+  ]
+}

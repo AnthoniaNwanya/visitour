@@ -14,8 +14,8 @@ Set `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USER`,
 `DATABASE_PASSWORD`, and `AUTH_SECRET_KEY`. The auth secret must match
 traveler_service. The shared PostgreSQL database must contain the `travelers`, `agencies`,
 `tours`, `visa_applications`, and `visa_types` tables. Create the cart and
-booking tables from `../CreateQueries/7_CreateBooking.sql` before starting the
-service, followed by `../CreateQueries/8_CreatePayment.sql`. These are fresh
+booking tables from `../MigrationsDB/SqlMigrationFiles/7_CreateBooking.sql` before starting the
+service, followed by `../MigrationsDB/SqlMigrationFiles/8_CreatePayment.sql`. These are fresh
 schema definitions; `IF NOT EXISTS` does not upgrade legacy booking tables.
 The payment script adds `cart_id` and changes the amount column for an older
 payments table, but existing payment rows are not associated with carts and

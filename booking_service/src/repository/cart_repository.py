@@ -5,7 +5,7 @@ from psycopg2.extras import DictCursor
 from models.enums.booking_status import BookingStatus
 from models.enums.booking_type import BookingType
 from models.enums.cart_status import CartStatus
-from repository.database.connection import get_db_connection
+from connection import get_db_connection
 from services.exception.exceptions import (
     CartItemNotFoundError,
     CartItemUnavailableError,

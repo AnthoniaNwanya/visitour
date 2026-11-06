@@ -1,6 +1,6 @@
 from psycopg2.extras import DictCursor
 
-from repository.database.connection import get_db_connection
+from connection import get_db_connection
 
 
 class BookingRepository:

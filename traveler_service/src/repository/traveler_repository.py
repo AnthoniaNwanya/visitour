@@ -1,4 +1,4 @@
-from repository.database.connection import get_db_connection
+from connection import get_db_connection
 from models.enums.traveler_status import TravelerStatus
 from psycopg2.extras import DictCursor
 from datetime import timedelta

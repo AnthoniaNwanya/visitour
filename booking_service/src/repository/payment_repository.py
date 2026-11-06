@@ -5,7 +5,7 @@ from psycopg2.extras import DictCursor
 from models.enums.cart_status import CartStatus
 from models.enums.payment_status import PaymentStatus
 from repository.cart_repository import CartRepository
-from repository.database.connection import get_db_connection
+from connection import get_db_connection
 from services.exception.exceptions import (
     CartNotEditableError,
     CartNotFoundError,
