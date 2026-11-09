@@ -1,0 +1,20 @@
+from datetime import date, datetime
+
+from pydantic import BaseModel
+
+
+class GetTravelerResponse(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    phone_number: str
+    date_of_birth: date
+    address: str
+    city: str
+    country: str
+    nationality: str
+    status: str
+    profilepicture: str | None = None
+    created_at: datetime
+    updated_at: datetime

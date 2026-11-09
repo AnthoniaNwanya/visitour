@@ -15,6 +15,9 @@ agencyrouter.post("/validate-cac/{agency_id}")(agency_controller.validate_cac)
 
 agencyrouter.get("/")(agency_controller.get_agencies)
 agencyrouter.get("/profile")(agency_controller.get_agency_for_agency)
+agencyrouter.get("/traveler/{traveler_id}")(
+    agency_controller.get_traveler_for_agency
+)
 
 agencyrouter.put(
     "/edit",

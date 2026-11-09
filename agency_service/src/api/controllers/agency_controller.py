@@ -11,7 +11,14 @@ from schemas.agency_login_request import AgencyLoginRequest
 from schemas.get_query_request import GetQueryRequest
 from schemas.validate_cac_request import ValidateCACRequest
 from schemas.update_agency_request import UpdateAgencyRequest
-from services import create_agency_service, get_agency_service, update_agency_service, delete_agency_service, cac_validation
+from services import (
+    cac_validation,
+    create_agency_service,
+    delete_agency_service,
+    get_agency_service,
+    get_traveler_service,
+    update_agency_service,
+)
 from api.dependencies.authorization import get_current_agency
 from media_storage import parse_upload_request
 
@@ -145,6 +152,21 @@ async def get_agency_for_agency(get_current_agency: int = Depends(get_current_ag
             status_code=500,
             detail=str(e)
         )
+
+
+async def get_traveler_for_agency(
+    traveler_id: int,
+    _current_agency_id: int = Depends(get_current_agency),
+):
+    traveler = await get_traveler_service.get_traveler_for_agency(traveler_id)
+
+    if not traveler:
+        raise HTTPException(
+            status_code=404,
+            detail="Traveler not found",
+        )
+
+    return traveler
 
 
 async def update_agency(request: Request, current_agency_id: int = Depends(get_current_agency)):

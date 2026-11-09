@@ -3,7 +3,11 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from api.routers.routes import travelerrouter
+from api.routers.routes import (
+    travelerrouter, 
+    agencyrouter
+)
+
 from media_storage import MEDIA_ROOT
 
 
@@ -40,6 +44,7 @@ app = FastAPI(
 
 app.mount("/media", StaticFiles(directory=MEDIA_ROOT), name="media")
 app.include_router(travelerrouter)
+app.include_router(agencyrouter)
 
 
 @app.exception_handler(StarletteHTTPException)
